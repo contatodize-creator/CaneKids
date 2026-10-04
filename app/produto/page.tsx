@@ -1,0 +1,9 @@
+'use client';
+import {useState} from 'react';
+import Link from 'next/link';
+export default function Produto(){
+ const [nome,setNome]=useState('Seu nome'); const [frase,setFrase]=useState('Um presente especial'); const [qr,setQr]=useState(false);
+ return <main><header><Link href="/" className="logo"><b>Cane</b><strong>Kids</strong></Link><nav><Link href="/">Início</Link><Link href="/carrinho">Sacola</Link></nav></header>
+ <section className="productPage"><div className="productPreview"><div className="bigMug"><div className="bigHandle"></div><div className="customPrint"><small>{frase}</small><b>{nome}</b>{qr&&<span>▦</span>}</div></div><p>Prévia ilustrativa da personalização</p></div>
+ <div className="config"><span className="eyebrow">PERSONALIZE DO SEU JEITO</span><h1>Caneca personalizada</h1><div className="rating">★★★★★ <small>Presente feito especialmente para você</small></div><div className="price">R$ 39,90 <small>ou pague via Pix/cartão no checkout</small></div><label>Nome <input value={nome} maxLength={28} onChange={e=>setNome(e.target.value)}/></label><label>Frase ou mensagem <textarea value={frase} maxLength={90} onChange={e=>setFrase(e.target.value)}/></label><label className="upload">Foto ou arte <input type="file" accept="image/*"/><span>Enviar imagem</span><small>PNG ou JPG. Você poderá conferir antes da produção.</small></label><label className="qrOption"><input type="checkbox" checked={qr} onChange={e=>setQr(e.target.checked)}/><span><b>Adicionar experiência DizeCode</b><small>Conecte a caneca a vídeo, fotos, áudio ou mensagem por QR Code.</small></span></label><Link className="buy" href={'/carrinho?nome='+encodeURIComponent(nome)+'&qr='+(qr?'1':'0')}>Adicionar à sacola</Link><div className="safe">✓ Personalização conferida &nbsp; ✓ Pagamento seguro &nbsp; ✓ Frete calculado pelo CEP</div></div></section></main>
+}
