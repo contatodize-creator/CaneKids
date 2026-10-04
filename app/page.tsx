@@ -1,0 +1,25 @@
+'use client';
+
+import { useState } from 'react';
+
+const products = [
+  { icon:'☕', title:'Caneca com sua foto', text:'Transforme uma foto especial em um presente único.', price:'a partir de R$ 39,90' },
+  { icon:'🎁', title:'Caneca para presente', text:'Para aniversários, família, amigos e datas especiais.', price:'a partir de R$ 39,90' },
+  { icon:'✨', title:'Personalizados', text:'Sua ideia aplicada em produtos feitos especialmente para você.', price:'consulte opções' },
+  { icon:'▦', title:'Caneca com QR Code', text:'Adicione uma experiência digital ao presente com DizeCode.', price:'opção interativa' }
+];
+
+export default function Home(){
+ const [cart,setCart]=useState(0);
+ return <main>
+  <div className="top">Frete calculado para todo o Brasil • Personalização feita com carinho</div>
+  <header><div className="logo"><b>Cane</b><strong>Kids</strong></div><nav><a href="#produtos">Canecas</a><a href="#personalizados">Personalizados</a><a href="#como">Como funciona</a><a href="#contato">Atendimento</a></nav><button className="cart">Sacola ({cart})</button></header>
+  <section className="hero"><div className="heroText"><span className="pill">PRESENTES QUE CONTAM HISTÓRIAS</span><h1>Transforme momentos em <em>presentes únicos.</em></h1><p>Canecas e personalizados feitos com suas fotos, mensagens e ideias. Você cria a lembrança. A CaneKids transforma em presente.</p><div className="actions"><a className="primary" href="#produtos">Quero personalizar</a><a className="secondary" href="#como">Como funciona</a></div><div className="benefits"><span>✓ Personalizado por você</span><span>✓ Produção cuidadosa</span><span>✓ Enviamos para todo Brasil</span></div></div><div className="visual"><div className="blob"></div><div className="mug"><div className="handle"></div><div className="print">Sua<br/><b>história</b><small>♥</small></div></div><div className="tag">Feito especialmente<br/><b>para quem você ama.</b></div></div></section>
+  <section className="products" id="produtos"><span className="eyebrow">ESCOLHA COMO PRESENTEAR</span><h2>Um presente com a sua cara.</h2><p className="intro">Comece escolhendo uma ideia. Depois você personaliza do seu jeito.</p><div className="grid">{products.map((p,i)=><article key={p.title}><div className={'pic p'+i}><span>{p.icon}</span></div><div className="cardBody"><h3>{p.title}</h3><p>{p.text}</p><small>{p.price}</small><button onClick={()=>setCart(cart+1)}>Personalizar →</button></div></article>)}</div></section>
+  <section className="how" id="como"><div><span className="eyebrow">SIMPLES DO COMEÇO AO FIM</span><h2>Você imagina.<br/>A gente transforma.</h2><p>Personalizar não precisa ser complicado. Preparamos uma experiência simples para você criar seu presente.</p></div><ol><li><b>1</b><span><strong>Escolha o produto</strong>Caneca ou outro personalizado.</span></li><li><b>2</b><span><strong>Envie sua ideia</strong>Foto, frase, nome ou arte.</span></li><li><b>3</b><span><strong>Aprove a personalização</strong>Confira antes da produção.</span></li><li><b>4</b><span><strong>Receba onde estiver</strong>Calculamos o melhor frete para seu CEP.</span></li></ol></section>
+  <section className="qr" id="personalizados"><div><span className="eyebrow">EXPERIÊNCIA INTERATIVA</span><h2>Seu presente pode dizer ainda mais.</h2><p>Além da personalização, você poderá adicionar um QR Code e conectar o produto a vídeos, fotos, áudios e mensagens digitais.</p><span className="powered">Tecnologia DizeCode integrada à CaneKids</span></div><div className="qrDemo"><div className="qrbox">▦</div><div><b>Escaneie. Veja. Sinta.</b><p>Uma lembrança física conectada a uma experiência digital.</p></div></div></section>
+  <section className="shipping"><div><span>🚚</span><h3>Frete inteligente</h3><p>Informe seu CEP e compare opções de entrega antes de finalizar.</p></div><div><span>🔒</span><h3>Compra segura</h3><p>Pagamento protegido e acompanhamento do pedido.</p></div><div><span>💬</span><h3>Atendimento humano</h3><p>Precisa de ajuda para personalizar? Fale diretamente conosco.</p></div></section>
+  <section className="cta" id="contato"><h2>Tem uma ideia especial?</h2><p>Conte para a gente. Podemos ajudar a transformar sua ideia em presente.</p><a href="https://wa.me/5541998621723">Falar no WhatsApp</a></section>
+  <footer><div className="logo"><b>Cane</b><strong>Kids</strong></div><p>Canecas e personalizados feitos para guardar momentos.</p><small>© 2026 CaneKids • Brasil</small></footer>
+ </main>
+}
