@@ -12,8 +12,6 @@ const MUG_MODEL_URL='https://raw.githubusercontent.com/contatodize-creator/CaneK
 const PRINT_ARC=(20.5/22.5)*Math.PI*2;
 const WHITE_GAP=Math.PI*2-PRINT_ARC;
 
-// The GLB is already displayed upright by Three/GLTF: its vertical axis in the scene is Y.
-// These values place the print directly over the outside ceramic wall, not on a separate plane.
 const PRINT_RADIUS=0.0617;
 const PRINT_HEIGHT=0.142;
 const PRINT_Y_CENTER=0.073;
@@ -26,8 +24,9 @@ function RealMug({image,targetAngle=0}:{image:string|null;targetAngle:number}){
    if(!image)return null;
    const t=new THREE.TextureLoader().load(image);
    t.colorSpace=THREE.SRGBColorSpace;
-   // GLTF/Three canvas uploads otherwise invert the customer's artwork vertically.
-   t.flipY=false;
+   // The uploaded artwork is used on a regular Three.js CylinderGeometry,
+   // so its V coordinate must be flipped to keep text/faces upright.
+   t.flipY=true;
    t.wrapS=THREE.ClampToEdgeWrapping;
    t.wrapT=THREE.ClampToEdgeWrapping;
    t.anisotropy=16;
@@ -56,8 +55,6 @@ function RealMug({image,targetAngle=0}:{image:string|null;targetAngle:number}){
    }
  });
 
- // CylinderGeometry is Y-up, matching the upright mug. No X/Z rotation is required.
- // The missing arc is centered on the handle side so the handle and its immediate area stay white.
  const thetaStart=WHITE_GAP/2;
  return <group ref={group} rotation={[0,targetAngle,0]} position={[0,-1.30,0]} scale={18}>
    <primitive object={model}/>
