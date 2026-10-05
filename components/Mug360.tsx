@@ -7,16 +7,16 @@ import {Suspense,useEffect,useMemo,useRef} from 'react';
 type Props={image:string|null;autoRotate?:boolean;targetAngle?:number};
 const MUG_MODEL_URL='https://raw.githubusercontent.com/contatodize-creator/CaneKids/main/plain_mug.glb';
 
-// Production reference: 20.5 cm printable width on ~22.5 cm circumference.
+// Production proportion: 20.5 cm artwork around an approximately 22.5 cm circumference.
+// This intentionally leaves ~2 cm unprinted, centered behind/around the handle.
 const PRINT_ARC=(20.5/22.5)*Math.PI*2;
 const WHITE_GAP=Math.PI*2-PRINT_ARC;
 
-// Measurements taken from the actual plain_mug.glb geometry.
-// The model is Z-UP (not Y-UP): body radius ~0.0612 and body height ~0.150.
-const BODY_RADIUS=0.06135;
-const PRINT_RADIUS=0.06165; // only 0.3 mm/model-unit outside the ceramic surface
-const PRINT_HEIGHT=0.148;
-const PRINT_Z_CENTER=0.0779;
+// The GLB is already displayed upright by Three/GLTF: its vertical axis in the scene is Y.
+// These values place the print directly over the outside ceramic wall, not on a separate plane.
+const PRINT_RADIUS=0.0617;
+const PRINT_HEIGHT=0.142;
+const PRINT_Y_CENTER=0.073;
 
 function RealMug({image,targetAngle=0}:{image:string|null;targetAngle:number}){
  const group=useRef<THREE.Group>(null);
@@ -26,7 +26,8 @@ function RealMug({image,targetAngle=0}:{image:string|null;targetAngle:number}){
    if(!image)return null;
    const t=new THREE.TextureLoader().load(image);
    t.colorSpace=THREE.SRGBColorSpace;
-   t.flipY=true;
+   // GLTF/Three canvas uploads otherwise invert the customer's artwork vertically.
+   t.flipY=false;
    t.wrapS=THREE.ClampToEdgeWrapping;
    t.wrapT=THREE.ClampToEdgeWrapping;
    t.anisotropy=16;
@@ -38,24 +39,31 @@ function RealMug({image,targetAngle=0}:{image:string|null;targetAngle:number}){
    const meshes:THREE.Mesh[]=[];
    model.traverse((obj)=>{
      if(obj instanceof THREE.Mesh){
-       meshes.push(obj); obj.castShadow=true; obj.receiveShadow=true;
+       meshes.push(obj);
+       obj.castShadow=true;
+       obj.receiveShadow=true;
        obj.material=new THREE.MeshPhysicalMaterial({color:0xffffff,roughness:.18,metalness:0,clearcoat:.9,clearcoatRoughness:.10,side:THREE.FrontSide});
      }
    });
    return ()=>meshes.forEach(obj=>(obj.material as THREE.Material).dispose());
  },[model]);
  useEffect(()=>()=>texture?.dispose(),[texture]);
- useFrame(()=>{if(group.current){const d=targetAngle-group.current.rotation.z;group.current.rotation.z+=d*.09;}});
 
- // CylinderGeometry is Y-up. Rotate it 90° around X so its axis follows the
- // mug's real Z axis. In this GLB the handle extends toward +Y, so the 2 cm
- // non-printable seam is centered at +Y (theta=PI after this rotation).
- const thetaStart=Math.PI+WHITE_GAP/2;
- return <group ref={group} rotation={[0,0,targetAngle]} position={[0,-1.30,0]} scale={18}>
+ useFrame(()=>{
+   if(group.current){
+     const d=targetAngle-group.current.rotation.y;
+     group.current.rotation.y+=d*.09;
+   }
+ });
+
+ // CylinderGeometry is Y-up, matching the upright mug. No X/Z rotation is required.
+ // The missing arc is centered on the handle side so the handle and its immediate area stay white.
+ const thetaStart=WHITE_GAP/2;
+ return <group ref={group} rotation={[0,targetAngle,0]} position={[0,-1.30,0]} scale={18}>
    <primitive object={model}/>
-   {texture&&<mesh rotation={[Math.PI/2,0,0]} position={[0,0,PRINT_Z_CENTER]} castShadow>
+   {texture&&<mesh position={[0,PRINT_Y_CENTER,0]} rotation={[0,Math.PI,0]} castShadow>
      <cylinderGeometry args={[PRINT_RADIUS,PRINT_RADIUS,PRINT_HEIGHT,256,1,true,thetaStart,PRINT_ARC]}/>
-     <meshPhysicalMaterial map={texture} color={0xffffff} roughness={.25} metalness={0} clearcoat={.48} clearcoatRoughness={.14} side={THREE.FrontSide}/>
+     <meshPhysicalMaterial map={texture} color={0xffffff} roughness={.24} metalness={0} clearcoat={.42} clearcoatRoughness={.14} side={THREE.FrontSide}/>
    </mesh>}
  </group>;
 }
