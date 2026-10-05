@@ -8,7 +8,7 @@ type Props={image:string|null;autoRotate?:boolean;targetAngle?:number};
 const ceramic={color:'#fffdf9',roughness:.16,metalness:0,clearcoat:1,clearcoatRoughness:.08,ior:1.5};
 function Mug({image,targetAngle=0}:{image:string|null;targetAngle:number}){
  const group=useRef<THREE.Group>(null);
- const texture=useMemo(()=>{if(!image)return null;const t=new THREE.TextureLoader().load(image);t.colorSpace=THREE.SRGBColorSpace;t.wrapS=THREE.RepeatWrapping;t.wrapT=THREE.ClampToEdgeWrapping;t.repeat.set(-1,1);t.offset.set(1,0);t.flipY=false;t.anisotropy=16;t.needsUpdate=true;return t},[image]);
+ const texture=useMemo(()=>{if(!image)return null;const t=new THREE.TextureLoader().load(image);t.colorSpace=THREE.SRGBColorSpace;t.wrapS=THREE.RepeatWrapping;t.wrapT=THREE.ClampToEdgeWrapping;t.repeat.set(-1,1);t.offset.set(1,0);t.flipY=true;t.anisotropy=16;t.needsUpdate=true;return t},[image]);
  useEffect(()=>()=>texture?.dispose(),[texture]);
  useFrame(()=>{if(group.current){const d=targetAngle-group.current.rotation.y;group.current.rotation.y+=d*.09}});
  return <group ref={group} rotation={[0,targetAngle,0]} position={[0,-.05,0]}>
@@ -18,9 +18,7 @@ function Mug({image,targetAngle=0}:{image:string|null;targetAngle:number}){
    <mesh position={[0,1.345,0]} rotation={[Math.PI/2,0,0]}><circleGeometry args={[1.29,128]}/><meshStandardMaterial color="#dfe4e5" roughness={.48}/></mesh>
    <mesh position={[0,1.365,0]} rotation={[Math.PI/2,0,0]}><ringGeometry args={[1.27,1.37,128]}/><meshPhysicalMaterial {...ceramic}/></mesh>
    <mesh position={[0,-1.345,0]} rotation={[Math.PI/2,0,0]} castShadow><cylinderGeometry args={[1.30,1.25,.10,128]}/><meshPhysicalMaterial {...ceramic}/></mesh>
-   <mesh position={[1.47,.03,0]} rotation={[0,Math.PI/2,0]} castShadow><torusGeometry args={[.73,.19,32,96,Math.PI*1.58]}/><meshPhysicalMaterial {...ceramic}/></mesh>
-   <mesh position={[1.31,.66,0]} rotation={[0,0,-.12]} castShadow><capsuleGeometry args={[.19,.38,12,24]}/><meshPhysicalMaterial {...ceramic}/></mesh>
-   <mesh position={[1.31,-.62,0]} rotation={[0,0,.12]} castShadow><capsuleGeometry args={[.19,.38,12,24]}/><meshPhysicalMaterial {...ceramic}/></mesh>
+   <mesh position={[1.47,.02,0]} castShadow><torusGeometry args={[.72,.19,32,128]}/><meshPhysicalMaterial {...ceramic}/></mesh>
  </group>;
 }
 function Pedestal(){return <><mesh receiveShadow position={[0,-1.62,0]} rotation={[-Math.PI/2,0,0]}><circleGeometry args={[2.15,96]}/><meshStandardMaterial color="#eee9e2" roughness={.92}/></mesh><ContactShadows position={[0,-1.58,0]} opacity={.34} scale={5.2} blur={2.5} far={3.8}/></>}
