@@ -7,6 +7,13 @@ import {Suspense,useEffect,useMemo,useRef} from 'react';
 type Props={image:string|null;autoRotate?:boolean;targetAngle?:number};
 const MUG_MODEL_URL='https://raw.githubusercontent.com/contatodize-creator/CaneKids/main/plain_mug.glb';
 
+// Physical reference used by CaneKids:
+// printable artwork = 20.5 cm x 9.5 cm
+// mug circumference ~= 22.5 cm
+// therefore 2.0 cm remains white around the handle (about 1 cm each side).
+const PRINT_ARC=(20.5/22.5)*Math.PI*2;
+const WHITE_GAP=Math.PI*2-PRINT_ARC;
+
 function RealMug({image,targetAngle=0}:{image:string|null;targetAngle:number}){
  const group=useRef<THREE.Group>(null);
  const {scene}=useGLTF(MUG_MODEL_URL);
@@ -15,7 +22,6 @@ function RealMug({image,targetAngle=0}:{image:string|null;targetAngle:number}){
    if(!image)return null;
    const t=new THREE.TextureLoader().load(image);
    t.colorSpace=THREE.SRGBColorSpace;
-   // GLB UVs use bottom-left origin; uploaded browser images use top-left.
    t.flipY=true;
    t.wrapS=THREE.ClampToEdgeWrapping;
    t.wrapT=THREE.ClampToEdgeWrapping;
@@ -26,35 +32,25 @@ function RealMug({image,targetAngle=0}:{image:string|null;targetAngle:number}){
 
  useEffect(()=>{
    const meshes:THREE.Mesh[]=[];
-   const box=new THREE.Box3().setFromObject(model);
-   const size=new THREE.Vector3();
-   box.getSize(size);
    model.traverse((obj)=>{
      if(obj instanceof THREE.Mesh){
-       meshes.push(obj);
-       obj.castShadow=true;
-       obj.receiveShadow=true;
+       meshes.push(obj); obj.castShadow=true; obj.receiveShadow=true;
+       obj.material=new THREE.MeshPhysicalMaterial({color:0xffffff,roughness:.18,metalness:0,clearcoat:.9,clearcoatRoughness:.10,side:THREE.FrontSide});
      }
    });
-
-   // The downloaded GLB is a single mug mesh, so replacing its material paints
-   // the inside too. Keep the GLB as white ceramic and add a separate printable
-   // sleeve only around the OUTSIDE wall. This matches sublimation behavior.
-   meshes.forEach((obj)=>{
-     obj.material=new THREE.MeshPhysicalMaterial({
-       color:0xffffff,roughness:.18,metalness:0,clearcoat:.9,
-       clearcoatRoughness:.10,side:THREE.FrontSide
-     });
-   });
-   return ()=>meshes.forEach((obj)=>((obj.material as THREE.Material).dispose()));
+   return ()=>meshes.forEach(obj=>(obj.material as THREE.Material).dispose());
  },[model]);
  useEffect(()=>()=>texture?.dispose(),[texture]);
  useFrame(()=>{if(group.current){const d=targetAngle-group.current.rotation.y;group.current.rotation.y+=d*.09;}});
 
+ // CylinderGeometry supports thetaStart/thetaLength. The printable sleeve is therefore
+ // a real 20.5/22.5 circumference segment instead of a full 360-degree cylinder.
+ // Gap is centered at the handle/back seam. Slightly enlarged radius prevents z-fighting.
+ const thetaStart=WHITE_GAP/2;
  return <group ref={group} rotation={[0,targetAngle,0]} position={[0,-1.30,0]} scale={18}>
    <primitive object={model}/>
-   {texture&&<mesh rotation={[0,Math.PI,0]} position={[0,0,0]} castShadow>
-     <cylinderGeometry args={[0.0822,0.0822,0.087,192,1,true]}/>
+   {texture&&<mesh rotation={[0,Math.PI,0]} position={[0,0.001,0]} castShadow>
+     <cylinderGeometry args={[0.0808,0.0808,0.095,256,1,true,thetaStart,PRINT_ARC]}/>
      <meshPhysicalMaterial map={texture} color={0xffffff} roughness={.25} metalness={0} clearcoat={.48} clearcoatRoughness={.14} side={THREE.FrontSide}/>
    </mesh>}
  </group>;
