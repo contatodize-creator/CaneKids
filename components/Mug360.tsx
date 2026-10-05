@@ -5,10 +5,11 @@ import * as THREE from 'three';
 import {Suspense,useEffect,useMemo,useRef} from 'react';
 
 type Props={image:string|null;autoRotate?:boolean;targetAngle?:number};
+const MUG_MODEL_URL='https://raw.githubusercontent.com/contatodize-creator/CaneKids/main/plain_mug.glb';
 
 function RealMug({image,targetAngle=0}:{image:string|null;targetAngle:number}){
  const group=useRef<THREE.Group>(null);
- const {scene}=useGLTF('/plain_mug.glb');
+ const {scene}=useGLTF(MUG_MODEL_URL);
  const model=useMemo(()=>scene.clone(true),[scene]);
  const texture=useMemo(()=>{
    if(!image)return null;
@@ -21,43 +22,21 @@ function RealMug({image,targetAngle=0}:{image:string|null;targetAngle:number}){
    t.needsUpdate=true;
    return t;
  },[image]);
-
  useEffect(()=>{
    model.traverse((obj)=>{
      if(obj instanceof THREE.Mesh){
        obj.castShadow=true;
        obj.receiveShadow=true;
-       const mat=new THREE.MeshPhysicalMaterial({
-         color:0xffffff,
-         roughness:.18,
-         metalness:0,
-         clearcoat:.85,
-         clearcoatRoughness:.10,
-         side:THREE.DoubleSide,
-         map:texture||null
-       });
-       obj.material=mat;
+       obj.material=new THREE.MeshPhysicalMaterial({color:0xffffff,roughness:.18,metalness:0,clearcoat:.85,clearcoatRoughness:.10,side:THREE.DoubleSide,map:texture||null});
      }
    });
-   return ()=>{
-     model.traverse((obj)=>{if(obj instanceof THREE.Mesh){const m=obj.material as THREE.Material;m.dispose();}});
-   };
+   return ()=>model.traverse((obj)=>{if(obj instanceof THREE.Mesh)(obj.material as THREE.Material).dispose();});
  },[model,texture]);
  useEffect(()=>()=>texture?.dispose(),[texture]);
-
- useFrame(()=>{
-   if(group.current){
-     const d=targetAngle-group.current.rotation.y;
-     group.current.rotation.y+=d*.09;
-   }
- });
-
- return <group ref={group} rotation={[0,targetAngle,0]} position={[0,-1.30,0]} scale={18}>
-   <primitive object={model}/>
- </group>;
+ useFrame(()=>{if(group.current){const d=targetAngle-group.current.rotation.y;group.current.rotation.y+=d*.09;}});
+ return <group ref={group} rotation={[0,targetAngle,0]} position={[0,-1.30,0]} scale={18}><primitive object={model}/></group>;
 }
-
-useGLTF.preload('/plain_mug.glb');
+useGLTF.preload(MUG_MODEL_URL);
 
 function Pedestal(){return <><mesh receiveShadow position={[0,-1.62,0]} rotation={[-Math.PI/2,0,0]}><circleGeometry args={[2.15,96]}/><meshStandardMaterial color="#eee9e2" roughness={.92}/></mesh><ContactShadows position={[0,-1.58,0]} opacity={.34} scale={5.2} blur={2.5} far={3.8}/></>}
 
