@@ -15,26 +15,49 @@ function RealMug({image,targetAngle=0}:{image:string|null;targetAngle:number}){
    if(!image)return null;
    const t=new THREE.TextureLoader().load(image);
    t.colorSpace=THREE.SRGBColorSpace;
-   t.flipY=false;
+   // GLB UVs use bottom-left origin; uploaded browser images use top-left.
+   t.flipY=true;
    t.wrapS=THREE.ClampToEdgeWrapping;
    t.wrapT=THREE.ClampToEdgeWrapping;
    t.anisotropy=16;
    t.needsUpdate=true;
    return t;
  },[image]);
+
  useEffect(()=>{
+   const meshes:THREE.Mesh[]=[];
+   const box=new THREE.Box3().setFromObject(model);
+   const size=new THREE.Vector3();
+   box.getSize(size);
    model.traverse((obj)=>{
      if(obj instanceof THREE.Mesh){
+       meshes.push(obj);
        obj.castShadow=true;
        obj.receiveShadow=true;
-       obj.material=new THREE.MeshPhysicalMaterial({color:0xffffff,roughness:.18,metalness:0,clearcoat:.85,clearcoatRoughness:.10,side:THREE.DoubleSide,map:texture||null});
      }
    });
-   return ()=>model.traverse((obj)=>{if(obj instanceof THREE.Mesh)(obj.material as THREE.Material).dispose();});
- },[model,texture]);
+
+   // The downloaded GLB is a single mug mesh, so replacing its material paints
+   // the inside too. Keep the GLB as white ceramic and add a separate printable
+   // sleeve only around the OUTSIDE wall. This matches sublimation behavior.
+   meshes.forEach((obj)=>{
+     obj.material=new THREE.MeshPhysicalMaterial({
+       color:0xffffff,roughness:.18,metalness:0,clearcoat:.9,
+       clearcoatRoughness:.10,side:THREE.FrontSide
+     });
+   });
+   return ()=>meshes.forEach((obj)=>((obj.material as THREE.Material).dispose()));
+ },[model]);
  useEffect(()=>()=>texture?.dispose(),[texture]);
  useFrame(()=>{if(group.current){const d=targetAngle-group.current.rotation.y;group.current.rotation.y+=d*.09;}});
- return <group ref={group} rotation={[0,targetAngle,0]} position={[0,-1.30,0]} scale={18}><primitive object={model}/></group>;
+
+ return <group ref={group} rotation={[0,targetAngle,0]} position={[0,-1.30,0]} scale={18}>
+   <primitive object={model}/>
+   {texture&&<mesh rotation={[0,Math.PI,0]} position={[0,0,0]} castShadow>
+     <cylinderGeometry args={[0.0822,0.0822,0.087,192,1,true]}/>
+     <meshPhysicalMaterial map={texture} color={0xffffff} roughness={.25} metalness={0} clearcoat={.48} clearcoatRoughness={.14} side={THREE.FrontSide}/>
+   </mesh>}
+ </group>;
 }
 useGLTF.preload(MUG_MODEL_URL);
 
