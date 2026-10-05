@@ -7,12 +7,16 @@ import {Suspense,useEffect,useMemo,useRef} from 'react';
 type Props={image:string|null;autoRotate?:boolean;targetAngle?:number};
 const MUG_MODEL_URL='https://raw.githubusercontent.com/contatodize-creator/CaneKids/main/plain_mug.glb';
 
-// Physical reference used by CaneKids:
-// printable artwork = 20.5 cm x 9.5 cm
-// mug circumference ~= 22.5 cm
-// therefore 2.0 cm remains white around the handle (about 1 cm each side).
+// Production reference: 20.5 cm printable width on ~22.5 cm circumference.
 const PRINT_ARC=(20.5/22.5)*Math.PI*2;
 const WHITE_GAP=Math.PI*2-PRINT_ARC;
+
+// Measurements taken from the actual plain_mug.glb geometry.
+// The model is Z-UP (not Y-UP): body radius ~0.0612 and body height ~0.150.
+const BODY_RADIUS=0.06135;
+const PRINT_RADIUS=0.06165; // only 0.3 mm/model-unit outside the ceramic surface
+const PRINT_HEIGHT=0.148;
+const PRINT_Z_CENTER=0.0779;
 
 function RealMug({image,targetAngle=0}:{image:string|null;targetAngle:number}){
  const group=useRef<THREE.Group>(null);
@@ -41,16 +45,16 @@ function RealMug({image,targetAngle=0}:{image:string|null;targetAngle:number}){
    return ()=>meshes.forEach(obj=>(obj.material as THREE.Material).dispose());
  },[model]);
  useEffect(()=>()=>texture?.dispose(),[texture]);
- useFrame(()=>{if(group.current){const d=targetAngle-group.current.rotation.y;group.current.rotation.y+=d*.09;}});
+ useFrame(()=>{if(group.current){const d=targetAngle-group.current.rotation.z;group.current.rotation.z+=d*.09;}});
 
- // CylinderGeometry supports thetaStart/thetaLength. The printable sleeve is therefore
- // a real 20.5/22.5 circumference segment instead of a full 360-degree cylinder.
- // Gap is centered at the handle/back seam. Slightly enlarged radius prevents z-fighting.
- const thetaStart=WHITE_GAP/2;
- return <group ref={group} rotation={[0,targetAngle,0]} position={[0,-1.30,0]} scale={18}>
+ // CylinderGeometry is Y-up. Rotate it 90° around X so its axis follows the
+ // mug's real Z axis. In this GLB the handle extends toward +Y, so the 2 cm
+ // non-printable seam is centered at +Y (theta=PI after this rotation).
+ const thetaStart=Math.PI+WHITE_GAP/2;
+ return <group ref={group} rotation={[0,0,targetAngle]} position={[0,-1.30,0]} scale={18}>
    <primitive object={model}/>
-   {texture&&<mesh rotation={[0,Math.PI,0]} position={[0,0.001,0]} castShadow>
-     <cylinderGeometry args={[0.0808,0.0808,0.095,256,1,true,thetaStart,PRINT_ARC]}/>
+   {texture&&<mesh rotation={[Math.PI/2,0,0]} position={[0,0,PRINT_Z_CENTER]} castShadow>
+     <cylinderGeometry args={[PRINT_RADIUS,PRINT_RADIUS,PRINT_HEIGHT,256,1,true,thetaStart,PRINT_ARC]}/>
      <meshPhysicalMaterial map={texture} color={0xffffff} roughness={.25} metalness={0} clearcoat={.48} clearcoatRoughness={.14} side={THREE.FrontSide}/>
    </mesh>}
  </group>;
