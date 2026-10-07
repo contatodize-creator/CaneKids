@@ -65,13 +65,13 @@ export default function ProdutoComum() {
           </div>
         </div>
         <div style={{ background: '#fff', border: '1px solid #dbe5ec', borderRadius: 18, padding: 28 }}>
-          <span style={{ fontSize: 12, fontWeight: 800, color: '#087bc1' }}>{product.categoria}</span>
+          <div style={{fontSize:12,color:'#718695',marginBottom:12}}><Link href="/">Início</Link> &nbsp;›&nbsp; {product.categoria}</div><span style={{ fontSize: 12, fontWeight: 800, color: '#087bc1' }}>{product.categoria}</span>
           <h1 style={{ fontSize: 36, lineHeight: 1.1, margin: '10px 0 14px' }}>{product.nome}</h1>
-          <p style={{ color: '#60788a', fontSize: 16, lineHeight: 1.6 }}>{product.descricao || 'Produto CaneKids.'}</p>
+          <div style={{color:'#f3a400',fontWeight:800,margin:'10px 0'}}>★★★★★ <span style={{color:'#718695',fontSize:12,fontWeight:600}}>Produto novo</span></div><p style={{ color: '#60788a', fontSize: 16, lineHeight: 1.6 }}>{product.descricao || 'Produto CaneKids.'}</p>
           <div style={{ fontSize: 30, fontWeight: 900, margin: '24px 0' }}>R$ {Number(product.preco).toFixed(2).replace('.', ',')}</div>
-          <div style={{ fontSize: 13, color: stockColor, marginBottom: 18 }}>{product.estoque > 0 ? product.estoque + ' unidade(s) disponível(is)' : 'Produto indisponível'}</div>
+          <div style={{ fontSize: 13, color: stockColor, marginBottom: 18 }}>{product.estoque > 0 ? 'Em estoque · ' + product.estoque + ' unidade(s)' : 'Produto indisponível'}</div><div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:18,fontSize:12}}><div style={{padding:12,background:'#f7fafc',borderRadius:10}}><b>Envio para todo o Brasil</b><br/>Frete calculado no checkout</div><div style={{padding:12,background:'#f7fafc',borderRadius:10}}><b>Compra segura</b><br/>Pagamento protegido</div></div>
           <Link href={'/carrinho?produto=' + encodeURIComponent(product.id) + '&nome=' + encodeURIComponent(product.nome) + '&preco=' + encodeURIComponent(product.preco)} style={{ display: 'block', textAlign: 'center', background: buyColor, color: '#fff', padding: '16px', borderRadius: 10, fontWeight: 800, textDecoration: 'none', pointerEvents: pointer }}>Adicionar à sacola • R$ {Number(product.preco).toFixed(2).replace('.', ',')}</Link>
-          <div style={{ fontSize: 12, color: '#60788a', textAlign: 'center', marginTop: 12 }}>Compra segura · Produto conferido antes do envio</div>
+          <div style={{ fontSize: 12, color: '#60788a', textAlign: 'center', marginTop: 12 }}>Compra segura · Produto conferido antes do envio</div><div style={{marginTop:26,paddingTop:22,borderTop:'1px solid #e5edf1'}}><h3 style={{margin:'0 0 10px'}}>Detalhes do produto</h3><p style={{color:'#60788a',fontSize:14,lineHeight:1.6}}>Produto personalizado CaneKids, produzido sob demanda e preparado para presentear. As imagens da galeria mostram opções e detalhes do modelo.</p><details style={{padding:'12px 0',borderTop:'1px solid #edf2f5'}}><summary style={{fontWeight:700,cursor:'pointer'}}>Como funciona a entrega?</summary><p style={{fontSize:13,color:'#60788a'}}>Informe seu CEP no checkout para consultar as opções disponíveis.</p></details><details style={{padding:'12px 0',borderTop:'1px solid #edf2f5'}}><summary style={{fontWeight:700,cursor:'pointer'}}>Posso tirar dúvidas antes de comprar?</summary><p style={{fontSize:13,color:'#60788a'}}>Sim. Nosso atendimento pode orientar sobre o produto e a personalização.</p></details></div>
         </div>
       </section>
     </main>
