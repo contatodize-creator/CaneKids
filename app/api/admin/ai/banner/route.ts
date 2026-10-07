@@ -13,7 +13,7 @@ export async function POST(request: Request) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
       body: JSON.stringify({
-        model: process.env.OPENAI_MODEL || 'gpt-5-mini',
+        model: process.env.OPENAI_MODEL || 'gpt-6-luna',
         input: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: `Crie um banner para esta campanha: ${tema}` }
