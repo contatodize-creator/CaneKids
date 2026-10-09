@@ -29,8 +29,8 @@ function buildComposition(photos:string[],layout:Layout,zooms:number[],xs:number
 function ProdutoEditor(){
  const params=useSearchParams();const productId=params.get('id');const [catalogProduct,setCatalogProduct]=useState<any>(null);const [priceLoading,setPriceLoading]=useState(true);
  useEffect(()=>{let active=true;async function fetchPrice(){if(!supabase){if(active)setPriceLoading(false);return;}const r=await supabase.rpc('storefront_products');if(!active)return;const all=r.data||[];const selected=productId?all.find((p:any)=>String(p.id)===productId):all.find((p:any)=>p.tipo!=='comum'&&p.ativo!==false);setCatalogProduct(selected||null);setPriceLoading(false)}fetchPrice();return()=>{active=false}},[productId]);
- const price=Number(catalogProduct?.preco||0);const surcharge=qr?9.90:0;const money=(v:number)=>'R$ '+v.toFixed(2).replace('.',',');
- const [nome,setNome]=useState('Seu nome'); const [frase,setFrase]=useState('Um presente especial'); const [qr,setQr]=useState(false); const [photos,setPhotos]=useState<string[]>([]); const [fileNames,setFileNames]=useState<string[]>([]); const [printImage,setPrintImage]=useState<string|null>(null);
+ const price=Number(catalogProduct?.preco||0);const money=(v:number)=>'R$ '+v.toFixed(2).replace('.',',');
+ const [nome,setNome]=useState('Seu nome'); const [frase,setFrase]=useState('Um presente especial'); const [qr,setQr]=useState(false); const surcharge=qr?9.90:0; const [photos,setPhotos]=useState<string[]>([]); const [fileNames,setFileNames]=useState<string[]>([]); const [printImage,setPrintImage]=useState<string|null>(null);
  const [layout,setLayout]=useState<Layout>('side'); const [selected,setSelected]=useState(0); const [zooms,setZooms]=useState([100,100,100]); const [xs,setXs]=useState([50,50,50]); const [ys,setYs]=useState([50,50,50]);
  const [fontSize,setFontSize]=useState(26); const [font,setFont]=useState('Arial'); const [textColor,setTextColor]=useState('#173d5a'); const [view,setView]=useState<'front'|'left'|'right'|'flat'>('front'); const [spin,setSpin]=useState(false);
  useEffect(()=>{buildComposition(photos,layout,zooms,xs,ys,setPrintImage)},[photos,layout,zooms,xs,ys]);
