@@ -1,11 +1,23 @@
 import { NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
 
 const systemPrompt = `Você é o assistente de marketing da CaneKids, uma loja brasileira de presentes e canecas personalizadas. Gere apenas JSON válido, sem markdown. O banner deve ser curto, comercial, elegante e emocional, sem inventar avaliações, vendas, descontos, prazos ou benefícios não informados. Campos obrigatórios: etiqueta, titulo, subtitulo, texto_botao, link_botao. etiqueta em caixa alta e curta. titulo até 70 caracteres. subtitulo até 150 caracteres. texto_botao até 24 caracteres. link_botao deve ser #vitrine, #qr ou /produto conforme a intenção.`;
 
 export async function POST(request: Request) {
   try {
+    const authorization = request.headers.get('authorization') || '';
+    const token = authorization.startsWith('Bearer ') ? authorization.slice(7) : '';
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    if (!token || !url || !key) return NextResponse.json({ error: 'Acesso não autorizado.' }, { status: 401 });
+    const supabase = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
+    const user = await supabase.auth.getUser(token);
+    if (user.error || !user.data.user) return NextResponse.json({ error: 'Sessão inválida.' }, { status: 401 });
+    const adminClient = createClient(url, key, { global: { headers: { Authorization: `Bearer ${token}` } }, auth: { persistSession: false, autoRefreshToken: false } });
+    const permission = await adminClient.rpc('is_admin');
+    if (permission.error || permission.data !== true) return NextResponse.json({ error: 'Acesso restrito ao administrador.' }, { status: 403 });
     const { tema } = await request.json();
-    if (!tema || typeof tema !== 'string') return NextResponse.json({ error: 'Informe o tema da campanha.' }, { status: 400 });
+    if (!tema || typeof tema !== 'string' || tema.length > 500) return NextResponse.json({ error: 'Informe o tema da campanha.' }, { status: 400 });
     const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey) return NextResponse.json({ error: 'A integração ainda precisa da variável OPENAI_API_KEY no Vercel.' }, { status: 503 });
 
@@ -13,7 +25,7 @@ export async function POST(request: Request) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
       body: JSON.stringify({
-        model: process.env.OPENAI_MODEL || 'gpt-6-luna',
+        model: process.env.OPENAI_MODEL || 'gpt-4.1-mini',
         input: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: `Crie um banner para esta campanha: ${tema}` }
