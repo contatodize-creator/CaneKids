@@ -57,3 +57,5 @@
 .testimonialPlaceholder small{font-size:11px;color:#8295a0}
 @media(max-width:900px){.promoVideoSection{margin:35px 20px 60px;grid-template-columns:1fr;padding:28px}.socialProof .testimonialGrid{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.promoVideoSection{margin:30px 14px 55px;padding:22px;gap:22px}.promoVideoCopy h2{font-size:30px}.promoVideoPlaceholder{min-height:210px}.socialProof .testimonialGrid{grid-template-columns:1fr}.testimonialPhoto{height:130px}}
+
+.promoVideoPlayer{display:block;width:100%;aspect-ratio:16/9;object-fit:contain;background:#142e40;border-radius:18px}.testimonialPlaceholder img.testimonialPhoto{display:block;width:100%;object-fit:cover}
