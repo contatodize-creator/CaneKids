@@ -7,6 +7,7 @@ import {supabaseConfigured} from '../../lib/supabase';
 const modules=[
  {title:'Produtos',text:'Cadastre produtos comuns, personalizados ou com DizeCode.',href:'/admin/produtos'},
  {title:'Categorias',text:'Organize canecas e futuras linhas de produtos.',href:'/admin/categorias'},
+ {title:'Vídeo e depoimentos',text:'Publique o vídeo promocional e avaliações reais de clientes.',href:'/admin/conteudo'},
  {title:'Banners e vitrine',text:'Troque campanhas, imagens, chamadas e destaques da Home.',href:'/admin/banners'},
  {title:'Promoções',text:'Prepare descontos, campanhas e cupons.',href:'/admin/promocoes'},
  {title:'Pedidos',text:'Acompanhe pagamento, produção, frete e entrega.',href:'/admin/pedidos'},
