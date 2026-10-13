@@ -34,3 +34,26 @@
 @media(max-width:1050px){.storeHeader nav{order:4;width:100%;margin:0;justify-content:center;padding:10px 0}.storeSearch{max-width:none}}
 @media(max-width:900px){.storeHeader nav{display:flex;gap:14px;font-size:12px}.storeSearch{display:flex;order:3;width:100%;flex-basis:100%;max-width:none}.storeHeader .cart{margin-left:auto}.storeHero{padding-top:38px;padding-bottom:38px}.storeHero .heroText{margin:0 auto}}
 @media(max-width:520px){.storeHeader{padding:12px 16px;gap:12px}.storeHeader .logo{font-size:27px}.storeHeader nav{overflow-x:auto;flex-wrap:nowrap;justify-content:flex-start;white-space:nowrap;padding-bottom:12px}.storeSearch{min-width:0}.storeHero{padding:40px 20px}.storeHero .visual{height:310px}.storeHero .visual img{max-height:310px!important}.storeHero .benefits{flex-wrap:wrap}.storeHero .actions{flex-wrap:wrap}.storefront .storeGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.storeGrid .pic{height:180px}.storeGrid .cardBody{padding:13px;min-height:190px}.storeGrid .cardBody h3{font-size:14px}.storeGrid .cardBody small{font-size:15px}.storeGrid .cardBody a{font-size:12px;padding:10px 6px}.storefront{padding-left:14px;padding-right:14px}.categoryStrip{padding-left:14px;padding-right:14px}}
+
+
+/* Video promocional e depoimentos reais */
+.promoVideoSection{max-width:1180px;margin:55px auto 75px;padding:44px;display:grid;grid-template-columns:.8fr 1.2fr;align-items:center;gap:45px;background:#f2f8fc;border:1px solid #e0ebf1;border-radius:26px}
+.promoVideoCopy h2{font-size:38px;line-height:1.12;letter-spacing:-1.5px;margin:14px 0}
+.promoVideoCopy p{font-size:15px;line-height:1.8;color:#5f7888;margin-bottom:30px}
+.promoVideoSection .inlineBtn{display:inline-flex}
+.promoVideoPlaceholder{aspect-ratio:16/9;border-radius:18px;background:linear-gradient(145deg,#dcecf4,#f5f7fa);border:1px dashed #abc5d4;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px;text-align:center;color:#244c65;min-height:270px}
+.promoPlay{width:74px;height:74px;border-radius:50%;background:white;box-shadow:0 12px 30px #173d5a18;display:grid;place-items:center;padding-left:5px;font-size:25px;color:#087ac5}
+.promoVideoPlaceholder b{font-size:19px}
+.promoVideoPlaceholder span{font-size:13px;color:#60798b}
+.promoVideoPlaceholder small{font-size:11px;color:#8296a3}
+.socialProof .socialIntro{max-width:690px;margin:0 auto 32px;color:#60798b;font-size:15px;line-height:1.7}
+.socialProof .testimonialGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;text-align:left}
+.socialProof .testimonialPlaceholder{padding:0;overflow:hidden;border:1px solid #e0e9ef;background:#fff;border-radius:17px}
+.testimonialPhoto{height:145px;display:flex;justify-content:center;align-items:center;background:linear-gradient(130deg,#edf4f8,#f9f2f5);color:#8ba0ad;font-size:13px;border-bottom:1px dashed #cbdde6}
+.testimonialPlaceholder>div:last-child{padding:20px}
+.testimonialTag{font-size:10px;font-weight:900;letter-spacing:1.3px;color:#087ac5}
+.testimonialPlaceholder h3{font-size:18px;margin:10px 0 8px}
+.testimonialPlaceholder p{font-size:13px;line-height:1.7;color:#627b8b}
+.testimonialPlaceholder small{font-size:11px;color:#8295a0}
+@media(max-width:900px){.promoVideoSection{margin:35px 20px 60px;grid-template-columns:1fr;padding:28px}.socialProof .testimonialGrid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.promoVideoSection{margin:30px 14px 55px;padding:22px;gap:22px}.promoVideoCopy h2{font-size:30px}.promoVideoPlaceholder{min-height:210px}.socialProof .testimonialGrid{grid-template-columns:1fr}.testimonialPhoto{height:130px}}
