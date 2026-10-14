@@ -5,7 +5,7 @@ import {supabase} from '../lib/supabase';
 export default function Home(){
  const [search,setSearch]=useState(''),[selectedCategory,setSelectedCategory]=useState('');
  const [promoVideo,setPromoVideo]=useState(''),[testimonials,setTestimonials]=useState<any[]>([]);
- const [products,setProducts]=useState<any[]>([],[categories,setCategories]=useState<any[]>([]),[banners,setBanners]=useState<any[]>([]);
+ const [products,setProducts]=useState<any[]>([]),[categories,setCategories]=useState<any[]>([]),[banners,setBanners]=useState<any[]>([]);
  useEffect(()=>{async function load(){if(!supabase)return;const [p,c,b]=await Promise.all([supabase.rpc('storefront_products'),supabase.rpc('storefront_categories'),supabase.rpc('storefront_banners')]);setProducts(p.data||[]);setCategories(c.data||[]);setBanners(b.data||[]);const [v,t]=await Promise.all([supabase.from('home_media').select('video_url').eq('id',1).maybeSingle(),supabase.from('customer_testimonials').select('id,customer_name,quote,image_url,sort_order').eq('active',true).order('sort_order')]);setPromoVideo(v.data?.video_url||'');setTestimonials(t.data||[])}load()},[]);
  const banner=banners[0];
  const filteredProducts=products.filter(p=>(!selectedCategory||p.categoria===selectedCategory)&&(!search.trim()||[p.nome,p.descricao,p.categoria].join(' ').toLocaleLowerCase('pt-BR').includes(search.trim().toLocaleLowerCase('pt-BR'))));
