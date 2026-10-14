@@ -120,3 +120,18 @@ body{background:#fff;color:#18364b}
 .howSteps p{font-size:13px;color:#60798b;margin:4px 0 0;line-height:1.55}
 @media(max-width:900px){.how{grid-template-columns:1fr;gap:22px;padding:55px 25px}.howIntro{max-width:100%}.qrFeature{gap:20px}}
 @media(max-width:600px){.storeGrid.compactCatalog article{width:min(100%,350px)}.storeGrid.compactCatalog .pic{height:285px}.storeHero .visual img{max-height:300px!important}.how{padding:45px 18px}.howSteps li{padding:13px}.qrSteps>div{gap:10px}}
+
+
+/* Distinguish catalog mockups from customer-created artwork */
+.personalizationModes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0 12px}
+.personalizationModes button{padding:13px 10px;border:1px solid #d4e4ed;border-radius:12px;background:#fff;color:#21475e;font-weight:800;cursor:pointer}
+.personalizationModes button.active{background:#e7f5fc;border-color:#087ac5;color:#087ac5}
+.catalogExample{padding:14px 18px 24px;text-align:center}
+.catalogExample>img{width:100%;max-width:530px;height:380px;object-fit:contain;border-radius:16px;background:#fff}
+.catalogThumbnails{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:16px 0}
+.catalogThumbnails button{border:2px solid transparent;background:#fff;border-radius:10px;padding:4px;cursor:pointer}
+.catalogThumbnails button.active{border-color:#087ac5}
+.catalogThumbnails img{width:72px;height:65px;object-fit:contain}
+.catalogExample p{font-size:13px;line-height:1.6;color:#60798b}
+.catalogCustomize{background:#087ac5;color:#fff;border:0;padding:13px 22px;border-radius:12px;font-weight:800;cursor:pointer}
+@media(max-width:600px){.catalogExample>img{height:270px}.personalizationModes{gap:6px}.personalizationModes button{font-size:12px;padding:11px 6px}}
