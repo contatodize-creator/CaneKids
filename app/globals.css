@@ -135,3 +135,29 @@ body{background:#fff;color:#18364b}
 .catalogExample p{font-size:13px;line-height:1.6;color:#60798b}
 .catalogCustomize{background:#087ac5;color:#fff;border:0;padding:13px 22px;border-radius:12px;font-weight:800;cursor:pointer}
 @media(max-width:600px){.catalogExample>img{height:270px}.personalizationModes{gap:6px}.personalizationModes button{font-size:12px;padding:11px 6px}}
+
+
+.requestArtLink{grid-column:1/-1;display:block;padding:13px 15px;border:1px solid #087ac5;border-radius:12px;text-align:center;color:#087ac5;font-weight:800;background:#f0f9ff;text-decoration:none}
+.requestArtLink:hover{background:#e2f2fc}
+.artRequestPage{min-height:100vh;background:#f4f8fb;color:#173d5a}
+.artRequestPage>header{max-width:1150px;margin:auto;padding:25px 20px;display:flex;justify-content:space-between;align-items:center}
+.artRequestWrap{max-width:1150px;margin:35px auto;padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:65px;align-items:start}
+.artRequestWrap h1{font-size:clamp(34px,4vw,52px);letter-spacing:-1.7px;line-height:1.12;margin:18px 0}
+.artRequestWrap p{line-height:1.8;color:#5e7687}
+.artRequestWrap ol{padding-left:25px;line-height:2.6;font-weight:700}
+.artRequestForm{background:#fff;border:1px solid #dae7ef;border-radius:20px;padding:30px;box-shadow:0 15px 45px #173d5a0a}
+.artRequestForm h2{font-size:25px;margin:0 0 24px}
+.artRequestForm form{display:grid;gap:16px}
+.artRequestForm label{display:grid;gap:8px;font-weight:700;font-size:14px}
+.artRequestForm input:not([type=checkbox]),.artRequestForm textarea{width:100%;padding:12px;border:1px solid #cbdde8;border-radius:10px;font:inherit}
+.artRequestForm .artConsent{display:flex;align-items:flex-start;gap:10px;font-weight:400;line-height:1.6}
+.artRequestForm .artConsent input{margin-top:5px}
+.artRequestForm button{border:0;border-radius:10px;background:#087ac5;color:#fff;padding:15px;font-weight:800;cursor:pointer}
+.artRequestForm button:disabled{opacity:.5;cursor:not-allowed}
+.artRequestForm small{color:#678095}
+.artAdmin{max-width:1050px;margin:40px auto;padding:20px;color:#173d5a}
+.artAdmin article{padding:24px;border:1px solid #dce7ee;border-radius:14px;margin:20px 0;background:#fff}
+.artAdminPhotos{display:flex;gap:10px;margin:16px 0}
+.artAdminPhotos button{padding:10px 14px;border:1px solid #087ac5;border-radius:8px;color:#087ac5;background:#f2f9fc;cursor:pointer}
+.artAdmin select{padding:10px;border:1px solid #cbdde8;border-radius:8px;margin-left:10px}
+@media(max-width:800px){.artRequestWrap{grid-template-columns:1fr;gap:25px;margin:0 auto}.artRequestForm{padding:22px}}
