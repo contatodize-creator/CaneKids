@@ -1,0 +1,13 @@
+'use client';
+import {Suspense,useEffect,useState} from 'react';
+import {useSearchParams} from 'next/navigation';
+import Link from 'next/link';
+import {supabase} from '../../lib/supabase';
+function Review(){
+const params=useSearchParams(),token=params.get('token')||'';
+const [data,setData]=useState<any>(null),[loading,setLoading]=useState(true),[busy,setBusy]=useState(false),[feedback,setFeedback]=useState(''),[msg,setMsg]=useState(''),[done,setDone]=useState(false);
+useEffect(()=>{async function load(){if(!supabase||!token){setLoading(false);return;}const r=await supabase.rpc('view_art_proof',{p_token:token});setData(r.data);setLoading(false)}load()},[token]);
+async function review(approved:boolean){if(!supabase)return;if(!approved&&feedback.trim().length<5){setMsg('Descreva o que deseja alterar.');return;}setBusy(true);const r=await supabase.rpc('review_art_proof',{p_token:token,p_approved:approved,p_feedback:feedback});setBusy(false);if(r.error)setMsg(r.error.message);else if(!r.data)setMsg('Este link não está mais disponível para aprovação.');else{setDone(true);setMsg(approved?'Arte aprovada. Obrigado por confirmar!':'Sua solicitação de alteração foi registrada. A equipe preparará uma nova prévia.')}}
+const image=data?.proof_path?supabase?.storage.from('art-previews').getPublicUrl(data.proof_path).data.publicUrl:null;
+return <main className="approvalPage"><header><Link href="/" className="logo"><b>Cane</b><strong>Kids</strong></Link></header><section className="approvalCard"><span className="eyebrow">CONFIRMAÇÃO DE ARTE</span><h1>Confira sua caneca antes da produção</h1>{loading?<p>Carregando prévia...</p>:!data?<p>Link inválido ou indisponível. Solicite um novo link à CaneKids.</p>:<><p>Olá, {data.customer_name}. Confira a prévia abaixo com atenção aos nomes, fotos, cores e textos.</p>{image&&<img src={image} alt="Prévia da arte para aprovação" className="approvalImage"/>}{done?<p role="status">{msg}</p>:data.status!=='awaiting_approval'?<p>Esta arte não está aguardando aprovação no momento.</p>:<div className="approvalActions"><p>Ao aprovar, você confirma que conferiu a arte apresentada. A aprovação não realiza cobrança nem inicia a produção automaticamente.</p><button disabled={busy} onClick={()=>review(true)}>Aprovar esta arte</button><label>Precisa de alguma alteração?<textarea value={feedback} onChange={e=>setFeedback(e.target.value)} placeholder="Descreva o que devemos corrigir..." rows={4}/></label><button type="button" className="secondary" disabled={busy} onClick={()=>review(false)}>Solicitar alteração</button>{msg&&<p role="alert">{msg}</p>}</div>}</>}</section></main>}
+export default function Page(){return <Suspense fallback={<p>Carregando...</p>}><Review/></Suspense>}
